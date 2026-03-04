@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community — Giftwise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#F4F1EC;--surface:#FFFFFF;--surface2:#FAF8F4;
+      --terra:#C4623A;--terra-light:#E8845F;--terra-pale:#FDF0EB;
+      --sage:#6B9E6F;--sage-light:#EBF4EC;--sage-dark:#3E6442;
+      --amber:#D4920A;--amber-pale:#FDF6E3;
+      --charcoal:#2C2723;--muted:#9A8A78;--border:#EAE4DC;--dark:#1F1A15;
+    }
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--dark);display:flex;flex-direction:column;z-index:100;}
+    .sidebar-logo{padding:1.8rem 1.6rem 1.4rem;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:#C4623A;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .sidebar-logo span{color:#6B9E6F;}
+    .sidebar-nav{flex:1;padding:1.2rem 0.8rem;display:flex;flex-direction:column;gap:0.2rem;}
+    .nav-item{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:400;color:rgba(247,242,232,0.55);transition:background 0.15s,color 0.15s;text-decoration:none;}
+    .nav-item:hover{background:rgba(255,255,255,0.05);color:rgba(247,242,232,0.85);}
+    .nav-item.active{background:rgba(196,98,58,0.18);color:#E8845F;font-weight:500;}
+    .nav-icon{font-size:1rem;width:20px;text-align:center;}
+    .sidebar-user{padding:1.2rem 1.4rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:0.8rem;}
+    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;flex-shrink:0;}
+    .user-name{font-size:0.82rem;color:rgba(247,242,232,0.7);}
+    .user-email{font-size:0.7rem;color:rgba(247,242,232,0.35);margin-top:0.1rem;}
+    .logout-btn{margin-left:auto;background:none;border:none;color:rgba(247,242,232,0.3);cursor:pointer;font-size:0.8rem;}
+    .logout-btn:hover{color:var(--terra-light);}
+    .main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
+
+    .page-grid{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start;}
+
+    /* Left: feed */
+    .topbar{margin-bottom:1.5rem;}
+    .topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;}
+    .topbar h1 em{font-style:italic;color:var(--terra);}
+    .topbar p{font-size:0.85rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+
+    .feed-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:0;}
+    .feed-tab{padding:0.6rem 1.1rem;font-size:0.85rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 0.15s,border-color 0.15s;}
+    .feed-tab.active{color:var(--terra);border-color:var(--terra);}
+
+    /* Feed items */
+    .feed-item{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:1.2rem 1.4rem;margin-bottom:0.9rem;transition:transform 0.2s,box-shadow 0.2s;}
+    .feed-item:hover{transform:translateX(3px);box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+    .fi-header{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;}
+    .fi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.82rem;color:white;flex-shrink:0;}
+    .fi-meta{flex:1;}
+    .fi-name{font-size:0.88rem;font-weight:600;color:var(--charcoal);}
+    .fi-time{font-size:0.72rem;color:var(--muted);font-weight:300;}
+    .fi-badge{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:100px;}
+    .badge-edu{background:var(--terra-pale);color:var(--terra);}
+    .badge-np{background:var(--sage-light);color:var(--sage-dark);}
+    .badge-party{background:var(--amber-pale);color:var(--amber);}
+    .badge-milestone{background:#F0EBFB;color:#7040C0;}
+    .fi-body{font-size:0.85rem;color:var(--charcoal);line-height:1.65;margin-bottom:0.8rem;}
+    .fi-body strong{font-weight:600;}
+    .fi-body .amount{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--terra);}
+    .fi-highlight{background:var(--surface2);border-radius:10px;padding:0.8rem 1rem;font-size:0.8rem;color:var(--muted);line-height:1.5;font-weight:300;border-left:3px solid var(--terra);margin-bottom:0.8rem;}
+    .fi-highlight.sage{border-color:var(--sage);}
+    .fi-actions{display:flex;gap:1rem;}
+    .fi-action{font-size:0.75rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:0.35rem;transition:color 0.15s;}
+    .fi-action:hover{color:var(--terra);}
+
+    /* Milestone */
+    .milestone-card{background:var(--dark);border-radius:14px;padding:1.4rem;margin-bottom:0.9rem;position:relative;overflow:hidden;}
+    .milestone-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(196,98,58,0.18) 0%,transparent 60%);}
+    .mc-inner{position:relative;z-index:1;display:flex;align-items:center;gap:1rem;}
+    .mc-icon{font-size:2rem;}
+    .mc-text .mc-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:#F7F2E8;}
+    .mc-text .mc-sub{font-size:0.75rem;color:rgba(247,242,232,0.45);font-weight:300;margin-top:0.2rem;}
+
+    /* RIGHT PANEL */
+    .right-panel{display:flex;flex-direction:column;gap:1.2rem;}
+
+    /* Community stats */
+    .community-stats{background:var(--surface);border-radius:16px;border:1px solid var(--border);padding:1.4rem;}
+    .panel-title{font-size:0.8rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;}
+    .cstat-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:1px solid var(--border);}
+    .cstat-row:last-child{border-bottom:none;}
+    .cstat-label{font-size:0.82rem;color:var(--charcoal);font-weight:400;}
+    .cstat-val{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--terra);}
+
+    /* Top givers */
+    .top-givers{background:var(--surface);border-radius:16px;border:1px solid var(--border);padding:1.4rem;}
+    .giver-row{display:flex;align-items:center;gap:0.8rem;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+    .giver-row:last-child{border-bottom:none;}
+    .giver-rank{font-size:0.75rem;font-weight:700;color:var(--muted);width:18px;text-align:center;flex-shrink:0;}
+    .giver-rank.top{color:var(--amber);}
+    .giver-av{width:32px;height:32px;border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;flex-shrink:0;}
+    .giver-name{flex:1;font-size:0.83rem;font-weight:500;color:var(--charcoal);}
+    .giver-amount{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--terra);}
+    .you-badge{font-size:0.6rem;background:var(--terra-pale);color:var(--terra);padding:0.1rem 0.4rem;border-radius:100px;margin-left:0.3rem;}
+
+    /* Trending needs */
+    .trending{background:var(--surface);border-radius:16px;border:1px solid var(--border);padding:1.4rem;}
+    .trend-item{display:flex;align-items:center;gap:0.8rem;padding:0.7rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.15s;}
+    .trend-item:last-child{border-bottom:none;}
+    .trend-item:hover{opacity:0.75;}
+    .trend-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+    .trend-info{flex:1;}
+    .trend-name{font-size:0.82rem;font-weight:500;color:var(--charcoal);}
+    .trend-meta{font-size:0.7rem;color:var(--muted);font-weight:300;margin-top:0.15rem;}
+    .trend-pct{font-size:0.78rem;font-weight:600;color:var(--sage-dark);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fu{opacity:0;animation:fadeUp 0.6s forwards;}
+    .fu1{animation-delay:0.05s}.fu2{animation-delay:0.12s}.fu3{animation-delay:0.2s}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">Gift<span>wise</span></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="giving.html"><span class="nav-icon">🎁</span> My Giving</a>
+    <a class="nav-item" href="nonprofits.html"><span class="nav-icon">🌱</span> Nonprofits</a>
+    <a class="nav-item active" href="community.html"><span class="nav-icon">👥</span> Community</a>
+    <a class="nav-item" href="impact.html"><span class="nav-icon">📊</span> Impact Report</a>
+    <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AJ</div>
+    <div><div class="user-name" id="sidebarName">Alex Johnson</div><div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f6e636a774f68626e6663216c6062">[email&#160;protected]</a></div></div>
+    <button class="logout-btn" onclick="logout()">↩</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar fu fu1">
+    <h1>The <em>Community</em></h1>
+    <p>Real-time giving activity from the Giftwise community · all amounts anonymous</p>
+  </div>
+
+  <div class="page-grid">
+
+    <!-- FEED -->
+    <div class="fu fu2">
+      <div class="feed-tabs">
+        <div class="feed-tab active">All Activity</div>
+        <div class="feed-tab">Education</div>
+        <div class="feed-tab">Nonprofits</div>
+        <div class="feed-tab">Party Pools</div>
+        <div class="feed-tab">Milestones</div>
+      </div>
+
+      <!-- Milestone -->
+      <div class="milestone-card">
+        <div class="mc-inner">
+          <div class="mc-icon">🎉</div>
+          <div class="mc-text">
+            <div class="mc-title">Community just crossed $50,000 in purposeful giving!</div>
+            <div class="mc-sub">Reached today · 1,240 givers · zero gifts wasted</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed items -->
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#C4623A">SR</div>
+          <div class="fi-meta"><div class="fi-name">Sarah R. <span style="font-weight:300;color:var(--muted)">· London</span></div><div class="fi-time">2 minutes ago</div></div>
+          <span class="fi-badge badge-edu">Education</span>
+        </div>
+        <div class="fi-body">Contributed <span class="amount">$50</span> to <strong>Maya's STEM Programme</strong> through Alex's birthday pool. "Every child deserves access to science — this is a beautiful way to give."</div>
+        <div class="fi-highlight">"I used to panic-buy gifts last minute. Giftwise changed how I think about giving entirely."</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 14 hearts</div>
+          <div class="fi-action">💬 3 replies</div>
+          <div class="fi-action">🎁 Give too</div>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#6B9E6F">TW</div>
+          <div class="fi-meta"><div class="fi-name">T. Williams <span style="font-weight:300;color:var(--muted)">· Chicago</span></div><div class="fi-time">18 minutes ago</div></div>
+          <span class="fi-badge badge-np">Nonprofit</span>
+        </div>
+        <div class="fi-body">Started a new monthly sponsorship with <strong>Books Without Borders</strong> at <span class="amount">$20/mo</span>. Their 3rd Giftwise-sponsored nonprofit this year.</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 8 hearts</div>
+          <div class="fi-action">💬 1 reply</div>
+          <div class="fi-action">🌱 View nonprofit</div>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#D4920A">KL</div>
+          <div class="fi-meta"><div class="fi-name">K. Larsen <span style="font-weight:300;color:var(--muted)">· Portland</span></div><div class="fi-time">42 minutes ago</div></div>
+          <span class="fi-badge badge-party">Party Pool</span>
+        </div>
+        <div class="fi-body">Created a <strong>wedding contribution page</strong> for their upcoming celebration. Split: 70% to rural school supplies, 30% to Zero Waste Classrooms. Goal: <span class="amount">$1,200</span>.</div>
+        <div class="fi-highlight sage">"We have everything we need. What we want is for our guests to give something that outlasts the day."</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 31 hearts</div>
+          <div class="fi-action">💬 12 replies</div>
+          <div class="fi-action">🎁 Contribute</div>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#7040C0">JP</div>
+          <div class="fi-meta"><div class="fi-name">J. Park <span style="font-weight:300;color:var(--muted)">· Seattle</span></div><div class="fi-time">1 hour ago</div></div>
+          <span class="fi-badge badge-milestone">Milestone</span>
+        </div>
+        <div class="fi-body">Reached their <strong>1-year anniversary</strong> on Giftwise. Total given: <span class="amount">$840</span> across 6 causes. 23 gifts diverted from landfill. 🏆</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 52 hearts</div>
+          <div class="fi-action">💬 18 replies</div>
+          <div class="fi-action">🎉 Celebrate</div>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#3E6442">AP</div>
+          <div class="fi-meta"><div class="fi-name">Anita P. <span style="font-weight:300;color:var(--muted)">· Bristol</span></div><div class="fi-time">2 hours ago</div></div>
+          <span class="fi-badge badge-edu">Education</span>
+        </div>
+        <div class="fi-body">Fully funded <strong>Lena's first-year textbook list</strong> — <span class="amount">$120</span>. The goal was reached in 48 hours thanks to 6 contributors.</div>
+        <div class="fi-highlight">Goal reached! 🎉 Lena's textbooks are now ordered and on their way.</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 27 hearts</div>
+          <div class="fi-action">💬 9 replies</div>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div class="fi-header">
+          <div class="fi-avatar" style="background:#C4623A">MR</div>
+          <div class="fi-meta"><div class="fi-name">M. Rivera <span style="font-weight:300;color:var(--muted)">· Austin</span></div><div class="fi-time">3 hours ago</div></div>
+          <span class="fi-badge badge-np">Nonprofit</span>
+        </div>
+        <div class="fi-body">Made a one-time contribution of <span class="amount">$75</span> to <strong>SchoolKit Project</strong> in honour of their daughter's back-to-school season.</div>
+        <div class="fi-actions">
+          <div class="fi-action">❤️ 11 hearts</div>
+          <div class="fi-action">💬 2 replies</div>
+          <div class="fi-action">🌱 View nonprofit</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel fu fu3">
+
+      <!-- Community stats -->
+      <div class="community-stats">
+        <div class="panel-title">Community This Week</div>
+        <div class="cstat-row"><span class="cstat-label">Total raised</span><span class="cstat-val">$4,820</span></div>
+        <div class="cstat-row"><span class="cstat-label">Active givers</span><span class="cstat-val">312</span></div>
+        <div class="cstat-row"><span class="cstat-label">Education funded</span><span class="cstat-val">$2,940</span></div>
+        <div class="cstat-row"><span class="cstat-label">Nonprofit sponsored</span><span class="cstat-val">$1,880</span></div>
+        <div class="cstat-row"><span class="cstat-label">Gifts from landfill</span><span class="cstat-val">847</span></div>
+      </div>
+
+      <!-- Top givers -->
+      <div class="top-givers">
+        <div class="panel-title">Top Givers · August</div>
+        <div class="giver-row">
+          <div class="giver-rank top">🥇</div>
+          <div class="giver-av" style="background:#7040C0">JP</div>
+          <div class="giver-name">J. Park</div>
+          <div class="giver-amount">$840</div>
+        </div>
+        <div class="giver-row">
+          <div class="giver-rank top">🥈</div>
+          <div class="giver-av" style="background:#3E6442">AP</div>
+          <div class="giver-name">Anita P.</div>
+          <div class="giver-amount">$620</div>
+        </div>
+        <div class="giver-row">
+          <div class="giver-rank top">🥉</div>
+          <div class="giver-av" style="background:#D4920A">KL</div>
+          <div class="giver-name">K. Larsen</div>
+          <div class="giver-amount">$480</div>
+        </div>
+        <div class="giver-row">
+          <div class="giver-rank">4</div>
+          <div class="giver-av" style="background:#C4623A">AJ</div>
+          <div class="giver-name">Alex J. <span class="you-badge">You</span></div>
+          <div class="giver-amount">$340</div>
+        </div>
+        <div class="giver-row">
+          <div class="giver-rank">5</div>
+          <div class="giver-av" style="background:#6B9E6F">TW</div>
+          <div class="giver-name">T. Williams</div>
+          <div class="giver-amount">$295</div>
+        </div>
+      </div>
+
+      <!-- Trending needs -->
+      <div class="trending">
+        <div class="panel-title">Trending Needs</div>
+        <div class="trend-item">
+          <div class="trend-icon" style="background:var(--terra-pale)">📚</div>
+          <div class="trend-info">
+            <div class="trend-name">Maya's STEM Programme</div>
+            <div class="trend-meta">$270 still needed · 8 contributors</div>
+          </div>
+          <div class="trend-pct">44%</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-icon" style="background:var(--amber-pale)">🎓</div>
+          <div class="trend-info">
+            <div class="trend-name">Lena's University Fees</div>
+            <div class="trend-meta">$180 still needed · 6 contributors</div>
+          </div>
+          <div class="trend-pct">62%</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-icon" style="background:var(--sage-light)">🖥️</div>
+          <div class="trend-info">
+            <div class="trend-name">Dev's Coding Bootcamp</div>
+            <div class="trend-meta">$320 still needed · 3 contributors</div>
+          </div>
+          <div class="trend-pct">28%</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-icon" style="background:#F0EBFB">🎨</div>
+          <div class="trend-info">
+            <div class="trend-name">Rosa's Art School Supplies</div>
+            <div class="trend-meta">$90 still needed · 11 contributors</div>
+          </div>
+          <div class="trend-pct">81%</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const user=JSON.parse(sessionStorage.getItem('gw_user')||'{}');
+  if(user.avatar)document.getElementById('sidebarAvatar').textContent=user.avatar;
+  if(user.name)document.getElementById('sidebarName').textContent=user.name;
+  if(user.email)document.getElementById('sidebarEmail').textContent=user.email;
+  function logout(){sessionStorage.removeItem('gw_user');window.location.href='login.html';}
+  document.qu

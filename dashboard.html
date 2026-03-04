@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Giftwise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F4F1EC; --surface: #FFFFFF; --surface2: #FAF8F4;
+      --terra: #C4623A; --terra-light: #E8845F; --terra-pale: #FDF0EB;
+      --sage: #6B9E6F; --sage-light: #EBF4EC; --sage-dark: #3E6442;
+      --amber: #D4920A; --amber-pale: #FDF6E3;
+      --charcoal: #2C2723; --muted: #9A8A78; --border: #EAE4DC;
+      --dark: #1F1A15;
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--charcoal); min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      padding: 0; z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 1.8rem 1.6rem 1.4rem;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600;
+      color: #C4623A; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-logo span { color: #6B9E6F; }
+    .sidebar-nav { flex: 1; padding: 1.2rem 0.8rem; display: flex; flex-direction: column; gap: 0.2rem; }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.75rem 1rem; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 400; color: rgba(247,242,232,0.55);
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(247,242,232,0.85); }
+    .nav-item.active { background: rgba(196,98,58,0.18); color: #E8845F; font-weight: 500; }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-user {
+      padding: 1.2rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--terra); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600; flex-shrink: 0;
+    }
+    .user-name { font-size: 0.82rem; color: rgba(247,242,232,0.7); font-weight: 400; }
+    .user-email { font-size: 0.7rem; color: rgba(247,242,232,0.35); margin-top: 0.1rem; }
+    .logout-btn { margin-left: auto; background: none; border: none; color: rgba(247,242,232,0.3); cursor: pointer; font-size: 0.8rem; transition: color 0.2s; }
+    .logout-btn:hover { color: var(--terra-light); }
+
+    /* MAIN */
+    .main { margin-left: 240px; padding: 2rem 2.5rem; min-height: 100vh; }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2.2rem;
+    }
+    .topbar-left h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--charcoal); }
+    .topbar-left h1 em { font-style: italic; color: var(--terra); }
+    .topbar-left p { font-size: 0.85rem; color: var(--muted); font-weight: 300; margin-top: 0.2rem; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .date-badge { font-size: 0.78rem; color: var(--muted); background: white; border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 100px; }
+    .add-btn { background: var(--terra); color: white; border: none; padding: 0.55rem 1.2rem; border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 0.83rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .add-btn:hover { background: var(--terra-light); }
+
+    /* SUMMARY STRIP */
+    .summary-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;
+    }
+    .sum-card {
+      background: var(--surface); border-radius: 14px;
+      padding: 1.2rem 1.4rem; border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .sum-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    .sum-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .sum-value { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 700; color: var(--charcoal); line-height: 1; }
+    .sum-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; font-weight: 300; }
+    .sum-card.terra .sum-value { color: var(--terra); }
+    .sum-card.sage .sum-value { color: var(--sage-dark); }
+
+    /* DASHBOARD GRID */
+    .dash-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+
+    /* SECTION CARD */
+    .section-card {
+      background: var(--surface); border-radius: 18px;
+      border: 1px solid var(--border); overflow: hidden;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.6s forwards;
+    }
+    .section-card:nth-child(2) { animation-delay: 0.12s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .card-header {
+      padding: 1.4rem 1.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-header-left { display: flex; align-items: center; gap: 0.7rem; }
+    .card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .card-icon.terra { background: var(--terra-pale); }
+    .card-icon.sage  { background: var(--sage-light); }
+    .card-title { font-size: 1rem; font-weight: 600; color: var(--charcoal); }
+    .card-subtitle { font-size: 0.75rem; color: var(--muted); font-weight: 300; }
+    .card-badge { font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.7rem; border-radius: 100px; }
+    .badge-urgent { background: #FEE9E3; color: var(--terra); }
+    .badge-active { background: var(--sage-light); color: var(--sage-dark); }
+
+    .card-body { padding: 1.4rem 1.6rem; }
+
+    /* NEED CARD — Personal Education */
+    .need-person {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem;
+    }
+    .need-avatar {
+      width: 52px; height: 52px; border-radius: 14px; object-fit: cover;
+      flex-shrink: 0; border: 2px solid var(--terra-pale);
+    }
+    .need-avatar-fallback {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--terra-pale); color: var(--terra);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .need-name { font-size: 1rem; font-weight: 600; color: var(--charcoal); }
+    .need-relation { font-size: 0.78rem; color: var(--muted); font-weight: 300; }
+
+    .need-description { font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; margin-bottom: 1.4rem; }
+
+    .amount-block {
+      background: var(--terra-pale); border-radius: 14px;
+      padding: 1.2rem 1.4rem; margin-bottom: 1.4rem;
+    }
+    .amount-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; }
+    .amount-label { font-size: 0.75rem; color: var(--terra); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+    .amount-total { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--terra); line-height: 1; }
+    .amount-raised { font-size: 0.82rem; color: var(--muted); }
+
+    .progress-bar { height: 8px; background: #EDD5CA; border-radius: 100px; overflow: hidden; margin-bottom: 0.6rem; }
+    .progress-fill { height: 100%; background: linear-gradient(to right, var(--terra), var(--terra-light)); border-radius: 100px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); }
+
+    .need-items { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.4rem; }
+    .need-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.83rem; padding: 0.65rem 0.9rem; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
+    .need-item-name { color: var(--charcoal); font-weight: 400; }
+    .need-item-cost { color: var(--terra); font-weight: 600; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+
+    .contribute-btn {
+      width: 100%; padding: 0.9rem;
+      background: var(--terra); color: white; border: none;
+      border-radius: 12px; font-family: 'Outfit', sans-serif;
+      font-size: 0.92rem; font-weight: 500; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .contribute-btn:hover { background: var(--terra-light); transform: translateY(-1px); }
+
+    /* NONPROFIT CARD */
+    .nonprofit-banner {
+      width: 100%; height: 140px; object-fit: cover; display: block;
+      filter: saturate(0.8);
+    }
+    .nonprofit-banner-fallback {
+      width: 100%; height: 140px;
+      background: linear-gradient(135deg, #2d5a30, #4e8a52);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+
+    .np-info { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem; }
+    .np-logo {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--sage-light); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0; border: 2px solid white;
+      margin-top: -1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative; z-index: 1;
+    }
+    .np-name { font-size: 1rem; font-weight: 600; color: var(--charcoal); padding-top: 0.3rem; }
+    .np-category { font-size: 0.75rem; color: var(--sage-dark); font-weight: 500; background: var(--sage-light); padding: 0.2rem 0.6rem; border-radius: 100px; display: inline-block; margin-top: 0.3rem; }
+
+    .np-description { font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; margin-bottom: 1.4rem; }
+
+    .np-impact { background: var(--sage-light); border-radius: 14px; padding: 1.1rem 1.3rem; margin-bottom: 1.4rem; }
+    .np-impact-title { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage-dark); margin-bottom: 0.9rem; }
+    .impact-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .istat { text-align: center; }
+    .istat-num { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--sage-dark); line-height: 1; }
+    .istat-label { font-size: 0.68rem; color: var(--sage-dark); opacity: 0.7; margin-top: 0.2rem; line-height: 1.3; }
+
+    .np-amount-block { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem; padding: 1rem 1.2rem; background: var(--surface2); border-radius: 12px; border: 1px solid var(--border); }
+    .np-amount-left .np-amount-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+    .np-amount-left .np-amount-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--sage-dark); line-height: 1.1; }
+    .np-amount-left .np-amount-sub { font-size: 0.75rem; color: var(--muted); font-weight: 300; }
+    .np-change-btn { font-size: 0.78rem; color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 100px; cursor: pointer; font-family: 'Outfit', sans-serif; transition: border-color 0.2s, color 0.2s; }
+    .np-change-btn:hover { border-color: var(--sage); color: var(--sage-dark); }
+
+    .sponsor-btn {
+      width: 100%; padding: 0.9rem;
+      background: var(--sage-dark); color: white; border: none;
+      border-radius: 12px; font-family: 'Outfit', sans-serif;
+      font-size: 0.92rem; font-weight: 500; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .sponsor-btn:hover { background: var(--sage); transform: translateY(-1px); }
+
+    /* MODAL */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(30,25,20,0.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: white; border-radius: 20px; padding: 2rem;
+      width: 90%; max-width: 420px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.4rem; }
+    .modal p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.4rem; font-weight: 300; }
+    .modal-amounts { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-bottom: 1.2rem; }
+    .amt-chip {
+      padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 10px;
+      text-align: center; cursor: pointer; font-weight: 500; font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .amt-chip:hover, .amt-chip.selected { border-color: var(--terra); background: var(--terra-pale); color: var(--terra); }
+    .modal-input { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 0.92rem; outline: none; margin-bottom: 1.2rem; transition: border-color 0.2s; }
+    .modal-input:focus { border-color: var(--terra); }
+    .modal-actions { display: flex; gap: 0.8rem; }
+    .modal-confirm { flex:1; padding: 0.85rem; background: var(--terra); color:white; border:none; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:500; font-size:0.9rem; cursor:pointer; transition:background 0.2s; }
+    .modal-confirm:hover { background: var(--terra-light); }
+    .modal-cancel { padding: 0.85rem 1.2rem; background:none; border:1.5px solid var(--border); border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.9rem; cursor:pointer; color:var(--muted); transition:border-color 0.2s; }
+    .modal-cancel:hover { border-color: var(--muted); }
+
+    /* SUCCESS TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      background: var(--charcoal); color: white;
+      padding: 1rem 1.5rem; border-radius: 12px;
+      font-size: 0.88rem; font-weight: 400; line-height: 1.5;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      display: flex; align-items: center; gap: 0.7rem;
+      transform: translateY(100px); opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s;
+      max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 1.5rem; }
+      .dash-grid { grid-template-columns: 1fr; }
+      .summary-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">Gift<span>wise</span></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active" href="#"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="giving.html"><span class="nav-icon">🎁</span> My Giving</a>
+    <a class="nav-item" href="nonprofits.html"><span class="nav-icon">🌱</span> Nonprofits</a>
+    <a class="nav-item" href="community.html"><span class="nav-icon">👥</span> Community</a>
+    <a class="nav-item" href="impact.html"><span class="nav-icon">📊</span> Impact Report</a>
+    <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AJ</div>
+    <div>
+      <div class="user-name" id="sidebarName">Alex Johnson</div>
+      <div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9e939a87bf98929e9693d19c9092">[email&#160;protected]</a></div>
+    </div>
+    <button class="logout-btn" onclick="logout()" title="Sign out">↩</button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Good morning, <em id="firstName">Alex</em> 👋</h1>
+      <p>Here's your giving dashboard for today</p>
+    </div>
+    <div class="topbar-right">
+      <div class="date-badge" id="dateBadge"></div>
+      <button class="add-btn" onclick="showContributeModal()">+ Contribute</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY STRIP -->
+  <div class="summary-strip">
+    <div class="sum-card terra">
+      <div class="sum-label">Total Contributed</div>
+      <div class="sum-value">$340</div>
+      <div class="sum-sub">Across all causes this year</div>
+    </div>
+    <div class="sum-card sage">
+      <div class="sum-label">Nonprofits Supported</div>
+      <div class="sum-value">3</div>
+      <div class="sum-sub">Active sponsorships</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Needs Funded</div>
+      <div class="sum-value">2</div>
+      <div class="sum-sub">Education goals reached</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Gifts Diverted</div>
+      <div class="sum-value">12</div>
+      <div class="sum-sub">From landfill this year</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="dash-grid">
+
+    <!-- SECTION 1: PERSONAL IMMEDIATE NEED -->
+    <div class="section-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon terra">📚</div>
+          <div>
+            <div class="card-title">Immediate Education Need</div>
+            <div class="card-subtitle">Support someone close to you</div>
+          </div>
+        </div>
+        <span class="card-badge badge-urgent">Urgent</span>
+      </div>
+      <div class="card-body">
+        <div class="need-person">
+          <div class="need-avatar-fallback">👧</div>
+          <div>
+            <div class="need-name">Maya Chen</div>
+            <div class="need-relation">Niece · Grade 8 · Portland, OR</div>
+          </div>
+        </div>
+
+        <p class="need-description">Maya has been accepted into a gifted STEM programme starting next semester but the school supplies, lab equipment, and registration fees are due by end of month. Every contribution goes directly to her education.</p>
+
+        <div class="amount-block">
+          <div class="amount-row">
+            <div class="amount-label">Amount Needed</div>
+            <div class="amount-total">$480</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="needProgress" style="width:0%"></div>
+          </div>
+          <div class="progress-labels">
+            <span id="raisedLabel">$210 raised</span>
+            <span>44% of goal</span>
+          </div>
+        </div>
+
+        <div class="need-items">
+          <div class="need-item"><span class="need-item-name">📐 STEM Lab Kit &amp; Supplies</span><span class="need-item-cost">$145</span></div>
+          <div class="need-item"><span class="need-item-name">💻 School Software Licence</span><span class="need-item-cost">$89</span></div>
+          <div class="need-item"><span class="need-item-name">📖 Textbooks &amp; Workbooks</span><span class="need-item-cost">$112</span></div>
+          <div class="need-item"><span class="need-item-name">🎓 Programme Registration Fee</span><span class="need-item-cost">$134</span></div>
+        </div>
+
+        <button class="contribute-btn" onclick="showContributeModal('need')">
+          💛 Contribute to Maya's Education
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: NONPROFIT SPONSOR -->
+    <div class="section-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon sage">🌿</div>
+          <div>
+            <div class="card-title">Your Nonprofit Sponsor</div>
+            <div class="card-subtitle">Organisation you're backing</div>
+          </div>
+        </div>
+        <span class="card-badge badge-active">Sponsoring</span>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="nonprofit-banner-fallback">🌍</div>
+        <div style="padding:1.2rem 1.4rem;">
+          <div class="np-info">
+            <div class="np-logo">♻️</div>
+            <div>
+              <div class="np-name">Gifts for Good Foundation</div>
+              <span class="np-category">Education &amp; Sustainability</span>
+            </div>
+          </div>
+
+          <p class="np-description">Gifts for Good Foundation redistributes unwanted gifts and funds to underserved students globally. They partner with schools in 14 countries to ensure children have the supplies they need to learn — reducing waste and expanding opportunity simultaneously.</p>
+
+          <div class="np-impact">
+            <div class="np-impact-title">Your Sponsorship Impact in 2025</div>
+            <div class="impact-stats">
+              <div class="istat">
+                <div class="istat-num">47</div>
+                <div class="istat-label">Students supplied</div>
+              </div>
+              <div class="istat">
+                <div class="istat-num">12</div>
+                <div class="istat-label">Schools supported</div>
+              </div>
+              <div class="istat">
+                <div class="istat-num">830kg</div>
+                <div class="istat-label">Waste diverted</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="np-amount-block">
+            <div class="np-amount-left">
+              <div class="np-amount-label">Monthly Sponsorship</div>
+              <div class="np-amount-val">$25 <span style="font-size:0.9rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:300">/mo</span></div>
+              <div class="np-amount-sub">Next billing: April 1, 2025</div>
+            </div>
+            <button class="np-change-btn" onclick="showSponsorModal()">Change amount</button>
+          </div>
+
+          <button class="sponsor-btn" onclick="showSponsorModal()">
+            🌱 Manage Sponsorship
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- CONTRIBUTE MODAL -->
+<div class="modal-backdrop" id="contributeModal">
+  <div class="modal">
+    <h3>💛 Contribute to Maya</h3>
+    <p>Choose how much you'd like to contribute towards Maya's STEM programme supplies and registration fees.</p>
+    <div class="modal-amounts">
+      <div class="amt-chip" onclick="selectAmt(this,'$10')">$10</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$25')">$25</div>
+      <div class="amt-chip selected" onclick="selectAmt(this,'$50')">$50</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$100')">$100</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$150')">$150</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$270')">Full gap</div>
+    </div>
+    <input class="modal-input" id="customAmt" type="text" placeholder="Or enter a custom amount…" />
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('contributeModal')">Cancel</button>
+      <button class="modal-confirm" onclick="confirmContribute()">Contribute →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPONSOR MODAL -->
+<div class="modal-backdrop" id="sponsorModal">
+  <div class="modal">
+    <h3>🌱 Manage Sponsorship</h3>
+    <p>Adjust your monthly sponsorship amount for Gifts for Good Foundation. Every dollar goes directly to students in need.</p>
+    <div class="modal-amounts">
+      <div class="amt-chip" onclick="selectAmt(this,'$10')">$10</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$15')">$15</div>
+      <div class="amt-chip selected" onclick="selectAmt(this,'$25')">$25</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$50')">$50</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$75')">$75</div>
+      <div class="amt-chip" onclick="selectAmt(this,'$100')">$100</div>
+    </div>
+    <input class="modal-input" type="text" placeholder="Or enter a custom amount…" />
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('sponsorModal')">Cancel</button>
+      <button class="modal-confirm" style="background:var(--sage-dark)" onclick="confirmSponsor()">Update Sponsorship →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Auth guard
+  const user = JSON.parse(sessionStorage.getItem('gw_user') || '{}');
+  
+
+  // Populate user info
+  if (user) {
+    document.getElementById('sidebarAvatar').textContent = user.avatar;
+    document.getElementById('sidebarName').textContent = user.name;
+    document.getElementById('sidebarEmail').textContent = user.email;
+    document.getElementById('firstName').textContent = user.name.split(' ')[0];
+  }
+
+  // Date
+  document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+
+  // Animate progress bar
+  setTimeout(() => { document.getElementById('needProgress').style.width = '44%'; }, 400);
+
+  // Modal helpers
+  function showContributeModal() { document.getElementById('contributeModal').classList.add('open'); }
+  function showSponsorModal() { document.getElementById('sponsorModal').classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-backdrop').forEach(b => b.addEventListener('click', e => { if (e.target === b) b.classList.remove('open'); }));
+
+  function selectAmt(el, val) {
+    el.closest('.modal-amounts').querySelectorAll('.amt-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    const input = el.closest('.modal').querySelector('.modal-input');
+    if (input) input.value = val;
+  }
+
+  function showToast(icon, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  function confirmContribute() {
+    const amt = document.getElementById('customAmt').value || '$50';
+    closeModal('contributeModal');
+    showToast('💛', `Thank you! ${amt} contributed to Maya's education fund.`);
+    // Update progress visually
+    const current = 210 + parseInt(amt.replace(/\D/g,'') || 50);
+    const pct = Math.min(Math.round(current / 480 * 100), 100);
+    document.getElementById('needProgress').style.width = pct + '%';
+    document.getElementById('raisedLabel').textContent = '$' + current + ' raised';
+  }
+
+  function confirmSponsor() {
+    closeModal('sponsorModal');

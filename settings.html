@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings — Giftwise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#F4F1EC;--surface:#FFFFFF;--surface2:#FAF8F4;
+      --terra:#C4623A;--terra-light:#E8845F;--terra-pale:#FDF0EB;
+      --sage:#6B9E6F;--sage-light:#EBF4EC;--sage-dark:#3E6442;
+      --charcoal:#2C2723;--muted:#9A8A78;--border:#EAE4DC;--dark:#1F1A15;
+    }
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--dark);display:flex;flex-direction:column;z-index:100;}
+    .sidebar-logo{padding:1.8rem 1.6rem 1.4rem;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:#C4623A;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .sidebar-logo span{color:#6B9E6F;}
+    .sidebar-nav{flex:1;padding:1.2rem 0.8rem;display:flex;flex-direction:column;gap:0.2rem;}
+    .nav-item{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:400;color:rgba(247,242,232,0.55);transition:background 0.15s,color 0.15s;text-decoration:none;}
+    .nav-item:hover{background:rgba(255,255,255,0.05);color:rgba(247,242,232,0.85);}
+    .nav-item.active{background:rgba(196,98,58,0.18);color:#E8845F;font-weight:500;}
+    .nav-icon{font-size:1rem;width:20px;text-align:center;}
+    .sidebar-user{padding:1.2rem 1.4rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:0.8rem;}
+    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;flex-shrink:0;}
+    .user-name{font-size:0.82rem;color:rgba(247,242,232,0.7);}
+    .user-email{font-size:0.7rem;color:rgba(247,242,232,0.35);margin-top:0.1rem;}
+    .logout-btn{margin-left:auto;background:none;border:none;color:rgba(247,242,232,0.3);cursor:pointer;font-size:0.8rem;}
+    .logout-btn:hover{color:var(--terra-light);}
+    .main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
+
+    .topbar{margin-bottom:2rem;}
+    .topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;}
+    .topbar h1 em{font-style:italic;color:var(--terra);}
+    .topbar p{font-size:0.85rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+
+    .settings-layout{display:grid;grid-template-columns:200px 1fr;gap:1.5rem;align-items:start;}
+
+    /* Tab nav */
+    .settings-nav{background:var(--surface);border-radius:14px;border:1px solid var(--border);overflow:hidden;position:sticky;top:1.5rem;}
+    .settings-nav-item{display:flex;align-items:center;gap:0.7rem;padding:0.85rem 1.1rem;font-size:0.83rem;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;}
+    .settings-nav-item:hover{color:var(--charcoal);background:var(--surface2);}
+    .settings-nav-item.active{color:var(--terra);background:var(--terra-pale);border-color:var(--terra);}
+    .settings-nav-item .sni{font-size:0.95rem;width:18px;}
+
+    /* Panels */
+    .settings-panel{display:none;}
+    .settings-panel.active{display:block;}
+
+    .section-card{background:var(--surface);border-radius:16px;border:1px solid var(--border);padding:1.8rem;margin-bottom:1.2rem;}
+    .section-heading{font-size:1rem;font-weight:600;color:var(--charcoal);margin-bottom:0.3rem;}
+    .section-sub{font-size:0.78rem;color:var(--muted);font-weight:300;margin-bottom:1.4rem;}
+    .divider{height:1px;background:var(--border);margin:1.4rem 0;}
+
+    /* Profile */
+    .profile-avatar-row{display:flex;align-items:center;gap:1.4rem;margin-bottom:1.6rem;}
+    .profile-av-big{width:72px;height:72px;border-radius:18px;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:600;flex-shrink:0;}
+    .change-photo-btn{font-size:0.8rem;color:var(--terra);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'Outfit',sans-serif;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+    .field label{display:block;font-size:0.75rem;font-weight:500;color:var(--charcoal);margin-bottom:0.4rem;letter-spacing:0.03em;}
+    .field input,.field select,.field textarea{width:100%;padding:0.8rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:var(--charcoal);outline:none;transition:border-color 0.2s;background:white;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--terra);}
+    .field textarea{min-height:80px;resize:vertical;line-height:1.6;}
+    .save-btn{background:var(--terra);color:white;border:none;padding:0.7rem 1.8rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;transition:background 0.2s;}
+    .save-btn:hover{background:var(--terra-light);}
+    .save-btn.sage{background:var(--sage-dark);}
+    .save-btn.sage:hover{background:var(--sage);}
+
+    /* Toggle row */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 0;border-bottom:1px solid var(--border);}
+    .toggle-row:last-child{border-bottom:none;padding-bottom:0;}
+    .toggle-info .tname{font-size:0.88rem;font-weight:500;color:var(--charcoal);}
+    .toggle-info .tdesc{font-size:0.75rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+    .toggle{width:42px;height:24px;border-radius:100px;background:var(--border);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+    .toggle.on{background:var(--sage-dark);}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+    .toggle.on::after{left:21px;}
+
+    /* Billing */
+    .billing-card{background:var(--surface2);border-radius:12px;border:1px solid var(--border);padding:1.2rem 1.4rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+    .bc-left .bc-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;}
+    .bc-left .bc-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--charcoal);}
+    .bc-left .bc-sub{font-size:0.72rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+    .bc-badge{font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:100px;background:var(--sage-light);color:var(--sage-dark);}
+    .payment-row{display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;background:white;border-radius:10px;border:1px solid var(--border);margin-bottom:0.6rem;}
+    .card-icon-badge{width:36px;height:24px;background:var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:white;font-weight:700;letter-spacing:0.05em;flex-shrink:0;}
+    .card-info{flex:1;}
+    .card-num{font-size:0.85rem;font-weight:500;color:var(--charcoal);}
+    .card-exp{font-size:0.72rem;color:var(--muted);}
+    .card-default{font-size:0.65rem;background:var(--terra-pale);color:var(--terra);padding:0.15rem 0.5rem;border-radius:100px;font-weight:600;}
+    .link-btn{font-size:0.78rem;color:var(--terra);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'Outfit',sans-serif;}
+
+    /* Danger zone */
+    .danger-zone{background:#FFF5F5;border:1px solid #FCCFCF;border-radius:12px;padding:1.2rem 1.4rem;}
+    .dz-title{font-size:0.82rem;font-weight:600;color:#C0392B;margin-bottom:0.5rem;}
+    .dz-desc{font-size:0.78rem;color:#E74C3C;font-weight:300;line-height:1.5;margin-bottom:1rem;}
+    .danger-btn{background:none;border:1.5px solid #E74C3C;color:#E74C3C;padding:0.55rem 1.2rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:background 0.2s;}
+    .danger-btn:hover{background:#FCCFCF;}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fu{opacity:0;animation:fadeUp 0.6s forwards;}
+    .fu1{animation-delay:0.05s}.fu2{animation-delay:0.12s}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">Gift<span>wise</span></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="giving.html"><span class="nav-icon">🎁</span> My Giving</a>
+    <a class="nav-item" href="nonprofits.html"><span class="nav-icon">🌱</span> Nonprofits</a>
+    <a class="nav-item" href="community.html"><span class="nav-icon">👥</span> Community</a>
+    <a class="nav-item" href="impact.html"><span class="nav-icon">📊</span> Impact Report</a>
+    <a class="nav-item active" href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AJ</div>
+    <div><div class="user-name" id="sidebarName">Alex Johnson</div><div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0869646d70486f65696164266b6765">[email&#160;protected]</a></div></div>
+    <button class="logout-btn" onclick="logout()">↩</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar fu fu1">
+    <h1>Account <em>Settings</em></h1>
+    <p>Manage your profile, preferences, and billing</p>
+  </div>
+
+  <div class="settings-layout fu fu2">
+
+    <!-- Left nav -->
+    <div class="settings-nav">
+      <div class="settings-nav-item active" onclick="showTab('profile')"><span class="sni">👤</span> Profile</div>
+      <div class="settings-nav-item" onclick="showTab('giving')"><span class="sni">🎁</span> Giving Prefs</div>
+      <div class="settings-nav-item" onclick="showTab('notifications')"><span class="sni">🔔</span> Notifications</div>
+      <div class="settings-nav-item" onclick="showTab('billing')"><span class="sni">💳</span> Billing</div>
+      <div class="settings-nav-item" onclick="showTab('privacy')"><span class="sni">🔒</span> Privacy</div>
+    </div>
+
+    <!-- Panels -->
+    <div>
+
+      <!-- Profile -->
+      <div class="settings-panel active" id="tab-profile">
+        <div class="section-card">
+          <div class="section-heading">Profile Information</div>
+          <div class="section-sub">This is how you appear to the community and on party pages you share.</div>
+          <div class="profile-avatar-row">
+            <div class="profile-av-big" id="bigAvatar">AJ</div>
+            <div><div style="font-size:0.88rem;font-weight:500;color:var(--charcoal)" id="profileName">Alex Johnson</div><div style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="42232e273a6c282d2a2c312d2c02252f232b2e6c212d2f">[email&#160;protected]</a></div><button class="change-photo-btn" style="margin-top:0.6rem">Change photo</button></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>First Name</label><input type="text" id="fName" value="Alex"/></div>
+            <div class="field"><label>Last Name</label><input type="text" id="lName" value="Johnson"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Email</label><input type="email" value="alex.johnson@gmail.com"/></div>
+            <div class="field"><label>City / Location</label><input type="text" value="Portland, OR"/></div>
+          </div>
+          <div class="field" style="margin-bottom:1.2rem"><label>Bio (shown on party pages)</label><textarea>Passionate about purposeful giving. Believe every gift should have a future.</textarea></div>
+          <button class="save-btn" onclick="showToast('✅ Profile saved successfully.')">Save Changes</button>
+        </div>
+        <div class="section-card">
+          <div class="section-heading">Connected Accounts</div>
+          <div class="section-sub">Accounts linked for sign-in.</div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border);">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <div style="flex:1"><div style="font-size:0.85rem;font-weight:500">Google</div><div style="font-size:0.72rem;color:var(--muted)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="16777a736e387c797e7865797856717b777f7a3875797b">[email&#160;protected]</a></div></div>
+            <span style="font-size:0.68rem;background:var(--sage-light);color:var(--sage-dark);padding:0.2rem 0.6rem;border-radius:100px;font-weight:600;">Connected</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Giving Prefs -->
+      <div class="settings-panel" id="tab-giving">
+        <div class="section-card">
+          <div class="section-heading">Giving Preferences</div>
+          <div class="section-sub">Set defaults for new contributions and party pages.</div>
+          <div class="form-row">
+            <div class="field"><label>Default Contribution Amount</label>
+              <select><option>$10</option><option>$15</option><option selected>$25</option><option>$50</option><option>$100</option></select>
+            </div>
+            <div class="field"><label>Default Split</label>
+              <select><option>50% Education / 50% Nonprofit</option><option>70% Education / 30% Nonprofit</option><option>100% Education</option><option>100% Nonprofit</option></select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:1.4rem"><label>Preferred Cause Category</label>
+            <select><option selected>Education</option><option>Environment</option><option>Children</option><option>Community</option></select>
+          </div>
+          <div class="divider"></div>
+          <div class="section-heading" style="margin-bottom:0.3rem">Monthly Sponsorship</div>
+          <div class="section-sub">Your active nonprofit sponsorship settings.</div>
+          <div class="form-row">
+            <div class="field"><label>Monthly Amount</label><input type="number" value="25"/></div>
+            <div class="field"><label>Billing Day</label><select><option selected>1st of month</option><option>15th of month</option><option>Last day of month</option></select></div>
+          </div>
+          <button class="save-btn sage" onclick="showToast('🌱 Giving preferences saved.')">Save Preferences</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="settings-panel" id="tab-notifications">
+        <div class="section-card">
+          <div class="section-heading">Email Notifications</div>
+          <div class="section-sub">Choose what Giftwise sends to your inbox.</div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Monthly impact digest</div><div class="tdesc">A summary of your giving and its impact each month</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Contribution receipts</div><div class="tdesc">Email confirmation every time you contribute</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Party page activity</div><div class="tdesc">When guests contribute to your party page</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Goal reached alerts</div><div class="tdesc">When an education need you contributed to is fully funded</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Community milestones</div><div class="tdesc">Big community achievements and leaderboard updates</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">New nonprofit recommendations</div><div class="tdesc">When causes matching your interests join Giftwise</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="section-card">
+          <div class="section-heading">In-App Notifications</div>
+          <div class="section-sub">What shows up inside the Giftwise dashboard.</div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Community activity feed</div><div class="tdesc">New giving activity from people you follow</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Trending needs alerts</div><div class="tdesc">Education needs that are close to their goal</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Badge earned notifications</div><div class="tdesc">Celebrate when you unlock a new giving badge</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+      </div>
+
+      <!-- Billing -->
+      <div class="settings-panel" id="tab-billing">
+        <div class="section-card">
+          <div class="section-heading">Sponsorship Billing</div>
+          <div class="section-sub">Your active monthly commitment to Gifts for Good Foundation.</div>
+          <div class="billing-card">
+            <div class="bc-left"><div class="bc-label">Monthly Sponsorship</div><div class="bc-val">$25.00 <span style="font-family:'Outfit',sans-serif;font-size:0.9rem;color:var(--muted);font-weight:300">/month</span></div><div class="bc-sub">Next billing: April 1, 2025 · Auto-renews</div></div>
+            <span class="bc-badge">Active</span>
+          </div>
+          <div class="billing-card">
+            <div class="bc-left"><div class="bc-label">Total Billed in 2025</div><div class="bc-val">$175.00</div><div class="bc-sub">7 months × $25 · Jan–Aug 2025</div></div>
+            <button class="link-btn">Download receipts</button>
+          </div>
+          <div class="divider"></div>
+          <div class="section-heading" style="margin-bottom:0.3rem">Payment Methods</div>
+          <div class="section-sub">Cards on file for contributions and sponsorship.</div>
+          <div class="payment-row">
+            <div class="card-icon-badge">VISA</div>
+            <div class="card-info"><div class="card-num">•••• •••• •••• 4242</div><div class="card-exp">Expires 08/2027</div></div>
+            <span class="card-default">Default</span>
+          </div>
+          <div class="payment-row">
+            <div class="card-icon-badge" style="background:#1a1f71">MC</div>
+            <div class="card-info"><div class="card-num">•••• •••• •••• 8891</div><div class="card-exp">Expires 03/2026</div></div>
+          </div>
+          <button class="link-btn" style="margin-top:0.8rem">+ Add payment method</button>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="settings-panel" id="tab-privacy">
+        <div class="section-card">
+          <div class="section-heading">Privacy Settings</div>
+          <div class="section-sub">Control how your activity appears to others in the community.</div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Show me in community feed</div><div class="tdesc">Your giving activity (anonymised) appears in the feed</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Show on leaderboard</div><div class="tdesc">Your name and giving total appear in monthly top givers</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Allow profile discovery</div><div class="tdesc">Others can find your profile when sharing party pages</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tname">Share impact reports publicly</div><div class="tdesc">Your annual impact report can be shared via a public link</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="section-card">
+          <div class="section-heading">Data & Account</div>
+          <div class="section-sub">Manage your personal data and account.</div>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem;">
+            <button class="save-btn" style="background:var(--surface2);color:var(--charcoal);border:1px solid var(--border);" onclick="showToast('📦 Data export started — you\'ll receive an email shortly.')">Export my data</button>
+          </div>
+          <div class="danger-zone">
+            <div class="dz-title">Danger Zone</div>
+            <div class="dz-desc">Deleting your account is permanent and cannot be undone. All your giving history, badges and impact data will be lost.</div>
+            <button class="danger-btn">Delete my account</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#F7F2E8;padding:1rem 1.5rem;border-radius:12px;font-size:0.88rem;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(100px);opacity:0;transition:transform 0.4s,opacity 0.4s;max-width:300px;z-index:999;"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const user=JSON.parse(sessionStorage.getItem('gw_user')||'{}');
+  if(user.avatar){document.getElementById('sidebarAvatar').textContent=user.avatar;document.getElementById('bigAvatar').textContent=user.avatar;}
+  if(user.name){document.getElementById('sidebarName').textContent=user.name;document.getElementById('profileName').textContent=user.name;const parts=user.name.split(' ');if(document.getElementById('fName'))document.getElementById('fName').value=parts[0]||'';if(document.getElementById('lName'))document.getElementById('lName').value=parts[1]||'';}
+  if(user.email){document.getElementById('sidebarEmail').textContent=user.email;document.getElementById('profileEmail').textContent=user.email;}
+  function logout(){sessionStorage.removeItem('gw_user');window.location.href='login.html';}
+
+  function showTab(id){
+    document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
+    

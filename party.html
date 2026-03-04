@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex's Birthday — Give a Gift That Matters</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #F7F2E8;
+      --warm: #FDFAF3;
+      --terra: #C4623A;
+      --terra-light: #E8845F;
+      --terra-pale: #FDF0EB;
+      --sage: #6B9E6F;
+      --sage-light: #EBF4EC;
+      --sage-dark: #3E6442;
+      --amber: #D4920A;
+      --amber-pale: #FDF6E3;
+      --charcoal: #2C2723;
+      --muted: #9A8A78;
+      --border: #EAE4DC;
+      --dark: #1F1A15;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* ── HERO BANNER ── */
+    .hero-banner {
+      background: var(--dark);
+      min-height: 54vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(196,98,58,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, rgba(107,158,111,0.12) 0%, transparent 50%);
+    }
+    .confetti-row {
+      position: absolute; top: 1.5rem; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 1.2rem;
+      font-size: 1.4rem; opacity: 0.5;
+      animation: floatRow 6s ease-in-out infinite;
+    }
+    @keyframes floatRow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    .hero-eyebrow {
+      position: relative; z-index: 1;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--terra-light);
+      margin-bottom: 1.2rem;
+      background: rgba(196,98,58,0.15);
+      padding: 0.35rem 1rem; border-radius: 100px;
+      display: inline-block;
+    }
+    .hero-banner h1 {
+      position: relative; z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700; line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--cream); margin-bottom: 1rem;
+    }
+    .hero-banner h1 em { font-style: italic; color: var(--terra-light); }
+    .hero-banner .hero-sub {
+      position: relative; z-index: 1;
+      font-size: 1rem; font-weight: 300;
+      color: rgba(247,242,232,0.55); line-height: 1.75;
+      max-width: 520px; margin-bottom: 2rem;
+    }
+
+    /* Host card */
+    .host-card {
+      position: relative; z-index: 1;
+      display: inline-flex; align-items: center; gap: 1rem;
+      background: rgba(253,250,243,0.08);
+      border: 1px solid rgba(253,250,243,0.12);
+      border-radius: 100px; padding: 0.6rem 1.4rem 0.6rem 0.6rem;
+      backdrop-filter: blur(8px);
+    }
+    .host-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--terra); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .host-info { text-align: left; }
+    .host-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
+    .host-label { font-size: 0.7rem; color: rgba(247,242,232,0.45); }
+
+    /* Event details strip */
+    .event-strip {
+      background: var(--terra);
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+    }
+    .event-detail {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.83rem; color: rgba(255,255,255,0.9);
+    }
+    .event-detail:last-child { border-right: none; }
+    .event-detail .icon { font-size: 1rem; }
+
+    /* ── MAIN CONTENT ── */
+    .page-content {
+      max-width: 860px; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* No gifts message */
+    .no-gifts-msg {
+      background: white; border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 2rem 2rem 1.6rem;
+      margin-bottom: 2rem;
+      display: flex; gap: 1.2rem; align-items: flex-start;
+    }
+    .msg-icon { font-size: 2rem; flex-shrink: 0; margin-top: 0.2rem; }
+    .msg-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.4rem; }
+    .msg-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+    /* Progress totals */
+    .totals-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .total-card {
+      background: white; border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.6rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .total-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    .total-label { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .total-amount { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; line-height: 1; margin-bottom: 0.6rem; }
+    .total-card.terra .total-amount { color: var(--terra); }
+    .total-card.sage  .total-amount { color: var(--sage-dark); }
+    .total-bar { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; margin-bottom: 0.5rem; }
+    .total-bar-fill { height: 100%; border-radius: 100px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+    .terra-fill { background: linear-gradient(to right, var(--terra), var(--terra-light)); }
+    .sage-fill  { background: linear-gradient(to right, var(--sage-dark), var(--sage)); }
+    .total-sub { font-size: 0.75rem; color: var(--muted); font-weight: 300; }
+
+    /* Contributor count */
+    .contrib-count {
+      text-align: center; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--muted); font-weight: 300;
+    }
+    .contrib-count strong { color: var(--charcoal); font-weight: 600; }
+    .contrib-avatars {
+      display: flex; justify-content: center; margin-bottom: 0.6rem;
+    }
+    .contrib-bubble {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--cream);
+      background: var(--terra); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 600;
+      margin-left: -8px;
+    }
+    .contrib-bubble:first-child { margin-left: 0; }
+    .contrib-bubble.sage { background: var(--sage-dark); }
+    .contrib-bubble.amber { background: var(--amber); }
+    .contrib-bubble.more { background: var(--border); color: var(--muted); }
+
+    /* ── CONTRIBUTION FORM ── */
+    .form-card {
+      background: white; border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .form-header {
+      background: var(--dark); padding: 1.6rem 2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .form-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--cream);
+    }
+    .form-header h2 em { font-style: italic; color: var(--terra-light); }
+    .form-header p { font-size: 0.82rem; color: rgba(247,242,232,0.45); font-weight: 300; margin-top: 0.2rem; }
+
+    .form-body { padding: 2rem; }
+
+    /* Step indicators */
+    .steps {
+      display: flex; align-items: center; gap: 0; margin-bottom: 2rem;
+    }
+    .step {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; font-weight: 500; color: var(--muted);
+    }
+    .step.active { color: var(--charcoal); }
+    .step.done { color: var(--sage-dark); }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--border); color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 600; flex-shrink: 0;
+    }
+    .step.active .step-num { background: var(--terra); color: white; }
+    .step.done .step-num { background: var(--sage-dark); color: white; }
+    .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 0.8rem; }
+
+    /* Amount chooser */
+    .section-label {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .amount-chips {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem;
+      margin-bottom: 1.4rem;
+    }
+    .chip {
+      padding: 0.8rem 0.5rem; border: 1.5px solid var(--border);
+      border-radius: 12px; text-align: center; cursor: pointer;
+      font-weight: 500; font-size: 0.95rem; color: var(--charcoal);
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--terra); color: var(--terra); background: var(--terra-pale); }
+    .chip.selected { border-color: var(--terra); background: var(--terra-pale); color: var(--terra); }
+    .chip .chip-sub { font-size: 0.65rem; color: var(--muted); font-weight: 300; margin-top: 0.2rem; display: block; }
+    .chip.selected .chip-sub { color: var(--terra-light); }
+
+    .custom-amount-row {
+      display: flex; gap: 0.7rem; margin-bottom: 1.8rem; align-items: center;
+    }
+    .custom-amount-row span { font-size: 1.1rem; color: var(--muted); font-weight: 500; }
+    .custom-input {
+      flex: 1; padding: 0.8rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 12px; font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem; color: var(--charcoal); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .custom-input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(196,98,58,0.1); }
+    .custom-input::placeholder { color: #C8BFB4; }
+
+    /* Split allocator */
+    .split-section { margin-bottom: 1.8rem; }
+    .split-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .split-header .section-label { margin: 0; }
+    .split-header .split-total { font-size: 0.82rem; color: var(--muted); }
+    .split-header .split-total strong { color: var(--charcoal); }
+
+    .split-option {
+      border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 1.2rem 1.4rem; margin-bottom: 0.8rem;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+    }
+    .split-option.terra-opt { }
+    .split-option.sage-opt  { }
+    .split-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .split-name { display: flex; align-items: center; gap: 0.7rem; }
+    .split-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .split-icon.terra { background: var(--terra-pale); }
+    .split-icon.sage  { background: var(--sage-light); }
+    .split-title { font-size: 0.88rem; font-weight: 500; color: var(--charcoal); }
+    .split-desc  { font-size: 0.72rem; color: var(--muted); font-weight: 300; }
+    .split-amount-display { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; }
+    .split-amount-display.terra { color: var(--terra); }
+    .split-amount-display.sage  { color: var(--sage-dark); }
+
+    /* Range slider */
+    .slider-wrap { position: relative; }
+    .split-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 6px; border-radius: 100px;
+      background: linear-gradient(to right, var(--terra) 0%, var(--terra) var(--pct, 50%), var(--sage) var(--pct, 50%), var(--sage) 100%);
+      outline: none; cursor: pointer;
+    }
+    .split-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: white; border: 3px solid var(--terra);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .split-slider::-webkit-slider-thumb:hover { box-shadow: 0 2px 12px rgba(196,98,58,0.3); }
+    .slider-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; }
+    .slider-labels span { font-size: 0.68rem; color: var(--muted); }
+
+    /* Guest name */
+    .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.4rem; }
+    .field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.4rem; letter-spacing: 0.03em; }
+    .field input {
+      width: 100%; padding: 0.8rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: var(--charcoal);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(196,98,58,0.1); }
+    .field input::placeholder { color: #C8BFB4; }
+
+    .message-field { margin-bottom: 1.6rem; }
+    .message-field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--charcoal); margin-bottom: 0.4rem; }
+    .message-field textarea {
+      width: 100%; padding: 0.85rem 1rem; min-height: 90px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+      color: var(--charcoal); resize: vertical; outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.6;
+    }
+    .message-field textarea:focus { border-color: var(--terra); }
+    .message-field textarea::placeholder { color: #C8BFB4; }
+
+    /* Anon toggle */
+    .anon-row {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+    .toggle {
+      width: 40px; height: 22px; border-radius: 100px;
+      background: var(--border); position: relative; cursor: pointer;
+      transition: background 0.2s; flex-shrink: 0;
+    }
+    .toggle.on { background: var(--sage-dark); }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: white; transition: left 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .toggle.on::after { left: 21px; }
+    .anon-label { font-size: 0.83rem; color: var(--charcoal); }
+    .anon-label span { font-size: 0.75rem; color: var(--muted); display: block; font-weight: 300; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%; padding: 1.1rem;
+      background: var(--terra); color: white; border: none;
+      border-radius: 14px; font-family: 'Outfit', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    }
+    .submit-btn:hover { background: var(--terra-light); transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+
+    .secure-note {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin-top: 1rem; font-size: 0.72rem; color: var(--muted);
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-screen {
+      display: none; text-align: center; padding: 4rem 2rem;
+      background: white; border-radius: 20px; border: 1px solid var(--border);
+    }
+    .success-screen.show { display: block; }
+    .success-icon { font-size: 4rem; margin-bottom: 1.2rem; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes popIn { from { transform: scale(0); opacity:0; } to { transform: scale(1); opacity:1; } }
+    .success-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.8rem; }
+    .success-screen h2 em { font-style: italic; color: var(--terra); }
+    .success-screen p { font-size: 0.95rem; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 420px; margin: 0 auto 1.8rem; }
+    .success-breakdown {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .sb-item {
+      background: var(--cream); border-radius: 12px; padding: 1rem 1.5rem;
+      min-width: 140px;
+    }
+    .sb-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.3rem; }
+    .sb-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; }
+    .sb-val.terra { color: var(--terra); }
+    .sb-val.sage  { color: var(--sage-dark); }
+    .share-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--dark); color: var(--cream);
+      padding: 0.85rem 2rem; border-radius: 100px;
+      border: none; font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .share-btn:hover { background: var(--charcoal); }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .page-footer a { color: var(--terra); text-decoration: none; }
+    .page-footer .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--terra); margin-bottom: 0.4rem; }
+    .page-footer .footer-logo span { color: var(--sage-dark); }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .fu { opacity:0; animation: fadeUp 0.7s forwards; }
+    .fu1 { animation-delay:0.1s; } .fu2 { animation-delay:0.2s; } .fu3 { animation-delay:0.3s; }
+
+    @media (max-width: 640px) {
+      .amount-chips { grid-template-columns: repeat(2,1fr); }
+      .totals-row { grid-template-columns: 1fr; }
+      .name-row { grid-template-columns: 1fr; }
+      .event-detail { padding: 0.7rem 1rem; font-size: 0.76rem; }
+      .hero-banner { padding: 4rem 1.5rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero-banner">
+  <div class="confetti-row">🎈 🎂 🎉 🎊 🎁 🎈 🎂 🎉 🎊 🎁 🎈 🎂 🎉</div>
+  <div class="hero-eyebrow">🎂 Birthday Celebration</div>
+  <h1>Celebrate <em>Alex</em><br>without the waste</h1>
+  <p class="hero-sub">Instead of gifts that gather dust, Alex has chosen something more meaningful. Your contribution goes directly to a child's education and a cause close to their heart.</p>
+  <div class="host-card">
+    <div class="host-avatar">AJ</div>
+    <div class="host-info">
+      <div class="host-name">Alex Johnson's Birthday</div>
+      <div class="host-label">Shared by the host · Giftwise</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT DETAILS STRIP -->
+<div class="event-strip">
+  <div class="event-detail"><span class="icon">📅</span> Saturday, April 12 · 7:00 PM</div>
+  <div class="event-detail"><span class="icon">📍</span> The Garden Loft, Portland</div>
+  <div class="event-detail"><span class="icon">🎯</span> Combined Goal: $750</div>
+  <div class="event-detail"><span class="icon">🌱</span> Zero gift waste</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-content">
+
+  <!-- No gifts message -->
+  <div class="no-gifts-msg fu fu1">
+    <div class="msg-icon">💌</div>
+    <div class="msg-body">
+      <h3>Your presence is the gift</h3>
+      <p>Alex has asked guests not to bring physical gifts. Instead, any contribution you make will be split between <strong>Maya's STEM education fund</strong> and <strong>Gifts for Good Foundation</strong> — two causes Alex cares about deeply. Even a small amount makes a real difference.</p>
+    </div>
+  </div>
+
+  <!-- Totals -->
+  <div class="totals-row fu fu2">
+    <div class="total-card terra">
+      <div class="total-label">📚 Maya's Education Fund</div>
+      <div class="total-amount" id="totalNeeds">$210</div>
+      <div class="total-bar"><div class="total-bar-fill terra-fill" id="needsBar" style="width:0%"></div></div>
+      <div class="total-sub" id="needsSub">of $480 goal · raised by guests</div>
+    </div>
+    <div class="total-card sage">
+      <div class="total-label">🌿 Gifts for Good Foundation</div>
+      <div class="total-amount" id="totalNP">$130</div>
+      <div class="total-bar"><div class="total-bar-fill sage-fill" id="npBar" style="width:0%"></div></div>
+      <div class="total-sub" id="npSub">of $270 goal · raised by guests</div>
+    </div>
+  </div>
+
+  <!-- Contributor count -->
+  <div class="contrib-count fu fu2">
+    <div class="contrib-avatars">
+      <div class="contrib-bubble">MR</div>
+      <div class="contrib-bubble sage">JP</div>
+      <div class="contrib-bubble amber">KL</div>
+      <div class="contrib-bubble">TW</div>
+      <div class="contrib-bubble sage">AS</div>
+      <div class="contrib-bubble more">+3</div>
+    </div>
+    <p><strong>8 guests</strong> have already contributed · Be the next one 🎉</p>
+  </div>
+
+  <!-- CONTRIBUTION FORM -->
+  <div class="form-card fu fu3" id="formCard">
+    <div class="form-header">
+      <div>
+        <h2>Make your <em>contribution</em></h2>
+        <p>Choose an amount and how you'd like to split it between the two causes</p>
+      </div>
+    </div>
+
+    <div class="form-body">
+
+      <!-- Steps -->
+      <div class="steps">
+        <div class="step active" id="step1ind"><div class="step-num">1</div> Amount</div>
+        <div class="step-line"></div>
+        <div class="step" id="step2ind"><div class="step-num">2</div> Split</div>
+        <div class="step-line"></div>
+        <div class="step" id="step3ind"><div class="step-num">3</div> Your Details</div>
+      </div>
+
+      <!-- STEP 1: Amount -->
+      <div id="step1">
+        <div class="section-label">How much would you like to give?</div>
+        <div class="amount-chips">
+          <div class="chip" onclick="selectChip(this, 15)">$15<span class="chip-sub">A little love</span></div>
+          <div class="chip selected" onclick="selectChip(this, 25)">$25<span class="chip-sub">Most popular</span></div>
+          <div class="chip" onclick="selectChip(this, 50)">$50<span class="chip-sub">Big impact</span></div>
+          <div class="chip" onclick="selectChip(this, 100)">$100<span class="chip-sub">Champion</span></div>
+        </div>
+        <div class="custom-amount-row">
+          <span>$</span>
+          <input class="custom-input" type="number" id="customAmt" placeholder="Custom amount…" min="1" oninput="onCustomInput()" />
+        </div>
+        <button class="submit-btn" onclick="goToStep(2)">Choose how to split →</button>
+      </div>
+
+      <!-- STEP 2: Split -->
+      <div id="step2" style="display:none;">
+        <div class="split-section">
+          <div class="split-header">
+            <div class="section-label">How should we split your gift?</div>
+            <div class="split-total">Total: <strong id="splitTotalDisplay">$25</strong></div>
+          </div>
+
+          <div class="split-option">
+            <div class="split-top">
+              <div class="split-name">
+                <div class="split-icon terra">📚</div>
+                <div>
+                  <div class="split-title">Maya's STEM Education</div>
+                  <div class="split-desc">School supplies, software & registration</div>
+                </div>
+              </div>
+              <div class="split-amount-display terra" id="needsAmt">$13</div>
+            </div>
+          </div>
+
+          <div style="padding:0.8rem 0.2rem;">
+            <input type="range" class="split-slider" id="splitSlider" min="0" max="100" value="50" oninput="updateSplit(this.value)" />
+            <div class="slider-labels">
+              <span>All to Education</span>
+              <span>Split evenly</span>
+              <span>All to Nonprofit</span>
+            </div>
+          </div>
+
+          <div class="split-option">
+            <div class="split-top">
+              <div class="split-name">
+                <div class="split-icon sage">🌿</div>
+                <div>
+                  <div class="split-title">Gifts for Good Foundation</div>
+                  <div class="split-desc">Education & sustainability for students globally</div>
+                </div>
+              </div>
+              <div class="split-amount-display sage" id="npAmt">$12</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.8rem;">
+          <button class="submit-btn" style="background:var(--border);color:var(--muted);flex:0 0 auto;width:auto;padding:1rem 1.4rem;" onclick="goToStep(1)">← Back</button>
+          <button class="submit-btn" onclick="goToStep(3)">Add your details →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Details -->
+      <div id="step3" style="display:none;">
+        <div class="name-row">
+          <div class="field">
+            <label>First name</label>
+            <input type="text" id="firstName" placeholder="e.g. Jamie" />
+          </div>
+          <div class="field">
+            <label>Last name (optional)</label>
+            <input type="text" id="lastName" placeholder="e.g. Smith" />
+          </div>
+        </div>
+
+        <div class="message-field">
+          <label>Leave a birthday message for Alex (optional)</label>
+          <textarea id="msgField" placeholder="Happy Birthday Alex! Wishing you a wonderful year ahead…"></textarea>
+        </div>
+
+        <div class="anon-row">
+          <div class="toggle" id="anonToggle" onclick="this.classList.toggle('on')"></div>
+          <div class="anon-label">
+            Contribute anonymously
+            <span>Your name won't appear anywhere on this page</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.8rem;">
+          <button class="submit-btn" style="background:var(--border);color:var(--muted);flex:0 0 auto;width:auto;padding:1rem 1.4rem;" onclick="goToStep(2)">← Back</button>
+          <button class="submit-btn" onclick="submitContribution()">🎉 Send My Gift →</button>
+        </div>
+
+        <div class="secure-note">🔒 Secure · No account needed · Your details stay private</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <h2>Thank you, <em id="successName">friend</em>!</h2>
+    <p>Your contribution has been sent. Alex will be touched to know you gave something that truly matters — not just for them, but for others too.</p>
+    <div class="success-breakdown">
+      <div class="sb-item">
+        <div class="sb-label">📚 Education Fund</div>
+        <div class="sb-val terra" id="successNeeds">$13</div>
+      </div>
+      <div class="sb-item">
+        <div class="sb-label">🌿 Nonprofit</div>
+        <div class="sb-val sage" id="successNP">$12</div>
+      </div>
+      <div class="sb-item">
+        <div class="sb-label">🎁 Total Gifted</div>
+        <div class="sb-val" id="successTotal" style="color:var(--charcoal)">$25</div>
+      </div>
+    </div>
+    <button class="share-btn" onclick="sharePageLink()">🔗 Share this page with other guests</button>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-logo">Gift<span>wise</span></div>
+  <p>Purposeful gifting for meaningful occasions · <a href="index.html">Learn more</a></p>
+</div>
+
+<script>
+  // State
+  let selectedAmount = 25;
+  let splitPct = 50; // % going to education (needs)
+
+  // Animate bars on load
+  setTimeout(() => {
+    document.getElementById('needsBar').style.width = '44%';  // 210/480
+    document.getElementById('npBar').style.width  = '48%';   // 130/270
+  }, 500);
+
+  // Chip selection
+  function selectChip(el, amt) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedAmount = amt;
+    document.getElementById('customAmt').value = '';
+    updateSplitDisplay();
+  }
+
+  function onCustomInput() {
+    const val = parseFloat(document.getElementById('customAmt').value);
+    if (val > 0) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      selectedAmount = val;
+    }
+    updateSplitDisplay();
+  }
+
+  // Split slider
+  function updateSplit(val) {
+    splitPct = parseInt(val);
+    // Update slider gradient
+    const slider = document.getElementById('splitSlider');
+    slider.style.setProperty('--pct', (100 - splitPct) + '%');
+    updateSplitDisplay();
+  }
+
+  function updateSplitDisplay() {
+    const total = selectedAmount || 25;
+    const npShare    = Math.round(total * splitPct / 100 * 100) / 100;
+    const needsShare = Math.round((total - npShare) * 100) / 100;
+    document.getElementById('needsAmt').textContent = '$' + needsShare.toFixed(0);
+    document.getElementById('npAmt').textContent    = '$' + npShare.toFixed(0);
+    document.getElementById('splitTotalDisplay').textContent = '$' + total.toFixed(0);
+    // Success preview
+    document.getElementById('successNeeds').textContent = '$' + needsShare.toFixed(0);
+    document.getElementById('successNP').textContent    = '$' + npShare.toFixed(0);
+    document.getElementById('successTotal').textContent = '$' + total.toFixed(0);
+  }
+
+  // Init slider gradient
+  document.getElementById('splitSlider').style.setProperty('--pct', '50%');
+  updateSplitDisplay();
+
+  // Step navigation
+  function goToStep(n) {
+    [1,2,3].forEach(i => {
+      document.getElementById('step'+i).style.display = i===n ? 'block' : 'none';
+      const ind = document.getElementById('step'+i+'ind');
+      ind.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+      const num = ind.querySelector('.step-num');
+      if (i < n) num.textContent = '✓';
+      else num.textContent = i;
+    });
+    window.scrollTo({ top: document.getElementById('formCard').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  // Submit
+  function submitContribution() {
+    const first = document.getElementById('firstName').value.trim() || 'Friend';
+    const anon  = document.getElementById('anonToggle').classList.contains('on');
+    const displayName = anon ? 'A kind guest' : first;
+
+    // Success screen
+    document.getElementById('successName').textContent = anon ? 'wonderful friend' : first;
+    document.getElementById('formCard').style.display = 'none';
+    const ss = document.getElementById('successScreen');
+    ss.classList.add('show');
+
+    // Update totals (simulate adding contribution)
+    const total    = selectedAmount || 25;
+    const npShare  = Math.round(total * splitPct / 100);
+    const needsShare = total - npShare;
+
+    const newNeeds = 210 + needsShare;
+    const newNP    = 130 + npShare;
+    document.getElementById('totalNeeds').textContent = '$' + newNeeds;
+    document.getElementById('totalNP').textContent    = '$' + newNP;
+    document.getElementById('needsBar').style.width   = Math.min(Math.round(newNeeds/480*100),100) + '%';
+    document.getElementById('npBar').style.width      = Math.min(Math.round(newNP/270*100),100) + '%';
+    document.getElementById('needsSub').textContent   = 'of $480 goal · raised by guests';
+    document.getElementById('npSub').textContent      = 'of $270 goal · raised by guests';
+
+    ss.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Share
+  function sharePageLink() {
+    if (navigator.share) {
+      navigator.share({ title: "Alex's Birthday — Give a gift that matters", url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied! Share it with other guests 🎉'));
+    }
+  }
+</script>
+</body>
+</html>

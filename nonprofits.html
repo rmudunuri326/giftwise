@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nonprofits — Giftwise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#F4F1EC;--surface:#FFFFFF;--surface2:#FAF8F4;
+      --terra:#C4623A;--terra-light:#E8845F;--terra-pale:#FDF0EB;
+      --sage:#6B9E6F;--sage-light:#EBF4EC;--sage-dark:#3E6442;
+      --amber:#D4920A;--amber-pale:#FDF6E3;
+      --charcoal:#2C2723;--muted:#9A8A78;--border:#EAE4DC;--dark:#1F1A15;
+    }
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--dark);display:flex;flex-direction:column;z-index:100;}
+    .sidebar-logo{padding:1.8rem 1.6rem 1.4rem;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:#C4623A;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .sidebar-logo span{color:#6B9E6F;}
+    .sidebar-nav{flex:1;padding:1.2rem 0.8rem;display:flex;flex-direction:column;gap:0.2rem;}
+    .nav-item{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:400;color:rgba(247,242,232,0.55);transition:background 0.15s,color 0.15s;text-decoration:none;}
+    .nav-item:hover{background:rgba(255,255,255,0.05);color:rgba(247,242,232,0.85);}
+    .nav-item.active{background:rgba(196,98,58,0.18);color:#E8845F;font-weight:500;}
+    .nav-icon{font-size:1rem;width:20px;text-align:center;}
+    .sidebar-user{padding:1.2rem 1.4rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:0.8rem;}
+    .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;flex-shrink:0;}
+    .user-name{font-size:0.82rem;color:rgba(247,242,232,0.7);}
+    .user-email{font-size:0.7rem;color:rgba(247,242,232,0.35);margin-top:0.1rem;}
+    .logout-btn{margin-left:auto;background:none;border:none;color:rgba(247,242,232,0.3);cursor:pointer;font-size:0.8rem;transition:color 0.2s;}
+    .logout-btn:hover{color:var(--terra-light);}
+    .main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
+    .topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;}
+    .topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;}
+    .topbar h1 em{font-style:italic;color:var(--terra);}
+    .topbar p{font-size:0.85rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+    .btn{background:var(--terra);color:white;border:none;padding:0.55rem 1.2rem;border-radius:100px;font-family:'Outfit',sans-serif;font-size:0.83rem;font-weight:500;cursor:pointer;transition:background 0.2s;}
+    .btn:hover{background:var(--terra-light);}
+
+    /* Current sponsor */
+    .current-banner{background:var(--dark);border-radius:18px;padding:1.8rem 2rem;margin-bottom:2rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;position:relative;overflow:hidden;}
+    .current-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(107,158,111,0.15) 0%,transparent 60%);}
+    .cb-badge{position:absolute;top:1.2rem;right:1.2rem;background:rgba(107,158,111,0.2);color:#6B9E6F;font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:100px;border:1px solid rgba(107,158,111,0.3);}
+    .cb-logo{width:56px;height:56px;border-radius:14px;background:var(--sage-light);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;position:relative;z-index:1;}
+    .cb-info{position:relative;z-index:1;}
+    .cb-label{font-size:0.68rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,242,232,0.4);margin-bottom:0.4rem;}
+    .cb-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#F7F2E8;margin-bottom:0.3rem;}
+    .cb-desc{font-size:0.82rem;color:rgba(247,242,232,0.5);font-weight:300;line-height:1.5;max-width:460px;}
+    .cb-stats{display:flex;gap:1.5rem;position:relative;z-index:1;}
+    .cb-stat-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:#6B9E6F;line-height:1;}
+    .cb-stat-label{font-size:0.68rem;color:rgba(247,242,232,0.35);font-weight:300;margin-top:0.2rem;}
+
+    /* Filters */
+    .filters{display:flex;align-items:center;gap:0.7rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .filter-chip{padding:0.45rem 1rem;border:1.5px solid var(--border);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--muted);cursor:pointer;background:white;transition:all 0.15s;}
+    .filter-chip:hover,.filter-chip.active{border-color:var(--terra);color:var(--terra);background:var(--terra-pale);}
+    .search-box{flex:1;max-width:260px;padding:0.45rem 1rem;border:1.5px solid var(--border);border-radius:100px;font-family:'Outfit',sans-serif;font-size:0.78rem;color:var(--charcoal);outline:none;transition:border-color 0.2s;}
+    .search-box:focus{border-color:var(--terra);}
+
+    /* NP grid */
+    .np-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+    .np-card{background:var(--surface);border-radius:16px;border:2px solid var(--border);overflow:hidden;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;}
+    .np-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.08);}
+    .np-card.sponsored{border-color:var(--sage);}
+    .np-img{width:100%;height:120px;object-fit:cover;display:block;filter:saturate(0.7);}
+    .np-img-fallback{width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+    .np-body{padding:1.2rem;}
+    .np-head{display:flex;align-items:flex-start;gap:0.8rem;margin-bottom:0.9rem;}
+    .np-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .np-name{font-size:0.95rem;font-weight:600;color:var(--charcoal);}
+    .np-cat{font-size:0.7rem;color:var(--sage-dark);background:var(--sage-light);padding:0.15rem 0.55rem;border-radius:100px;display:inline-block;margin-top:0.3rem;}
+    .np-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:1rem;}
+    .np-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+    .metric{text-align:center;padding:0.6rem 0.3rem;background:var(--surface2);border-radius:8px;}
+    .metric-num{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--charcoal);line-height:1;}
+    .metric-label{font-size:0.62rem;color:var(--muted);margin-top:0.2rem;}
+    .np-footer{display:flex;gap:0.6rem;align-items:center;}
+    .sponsor-btn{flex:1;padding:0.7rem;background:var(--sage-dark);color:white;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:background 0.2s;}
+    .sponsor-btn:hover{background:var(--sage);}
+    .sponsor-btn.current{background:var(--sage-light);color:var(--sage-dark);cursor:default;}
+    .learn-btn{padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;background:none;font-family:'Outfit',sans-serif;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+    .learn-btn:hover{border-color:var(--sage);color:var(--sage-dark);}
+    .rating{font-size:0.72rem;color:var(--amber);letter-spacing:0.05em;}
+
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--charcoal);margin-bottom:1rem;}
+    .section-title em{font-style:italic;color:var(--terra);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fu{opacity:0;animation:fadeUp 0.6s forwards;}
+    .fu1{animation-delay:0.05s}.fu2{animation-delay:0.1s}.fu3{animation-delay:0.18s}.fu4{animation-delay:0.26s}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">Gift<span>wise</span></div>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a class="nav-item" href="giving.html"><span class="nav-icon">🎁</span> My Giving</a>
+    <a class="nav-item active" href="nonprofits.html"><span class="nav-icon">🌱</span> Nonprofits</a>
+    <a class="nav-item" href="community.html"><span class="nav-icon">👥</span> Community</a>
+    <a class="nav-item" href="impact.html"><span class="nav-icon">📊</span> Impact Report</a>
+    <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AJ</div>
+    <div><div class="user-name" id="sidebarName">Alex Johnson</div><div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6f0e030a172f08020e0603410c0002">[email&#160;protected]</a></div></div>
+    <button class="logout-btn" onclick="logout()">↩</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar fu fu1">
+    <div><h1>Browse <em>Nonprofits</em></h1><p>Find causes aligned with purposeful giving · switch anytime</p></div>
+    <button class="btn">Suggest a Cause</button>
+  </div>
+
+  <!-- Current sponsor -->
+  <div class="current-banner fu fu2">
+    <div class="cb-badge">✓ Currently Sponsoring</div>
+    <div class="cb-logo">♻️</div>
+    <div class="cb-info">
+      <div class="cb-label">Your Active Sponsorship</div>
+      <div class="cb-name">Gifts for Good Foundation</div>
+      <div class="cb-desc">Redistributing unwanted gifts and funding to underserved students globally across 14 countries. $25/month · renews April 1.</div>
+    </div>
+    <div class="cb-stats">
+      <div><div class="cb-stat-num">47</div><div class="cb-stat-label">Students helped</div></div>
+      <div><div class="cb-stat-num">830kg</div><div class="cb-stat-label">Waste diverted</div></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters fu fu3">
+    <input class="search-box" placeholder="🔍  Search causes…" />
+    <div class="filter-chip active">All</div>
+    <div class="filter-chip">Education</div>
+    <div class="filter-chip">Environment</div>
+    <div class="filter-chip">Children</div>
+    <div class="filter-chip">Community</div>
+    <div class="filter-chip">Top Rated</div>
+  </div>
+
+  <div class="section-title fu fu3">Recommended for <em>you</em></div>
+
+  <div class="np-grid fu fu4">
+
+    <!-- Current -->
+    <div class="np-card sponsored">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#2d5a30,#4e8a52)">♻️</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:var(--sage-light)">♻️</div>
+          <div><div class="np-name">Gifts for Good Foundation</div><span class="np-cat">Education & Sustainability</span></div>
+        </div>
+        <p class="np-desc">Redistributes unwanted gifts and funding to underserved students in 14 countries, turning waste into opportunity.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">14</div><div class="metric-label">Countries</div></div>
+          <div class="metric"><div class="metric-num">8.2K</div><div class="metric-label">Students</div></div>
+          <div class="metric"><div class="metric-num">98%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★★</div>
+          <button class="sponsor-btn current">✓ Sponsoring · $25/mo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-card">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#5a3820,#8b6040)">📚</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:#FDF0EB">📚</div>
+          <div><div class="np-name">Books Without Borders</div><span class="np-cat">Education</span></div>
+        </div>
+        <p class="np-desc">Ships donated books and learning materials to remote communities where libraries don't exist. 100% of supplies go direct to classrooms.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">32</div><div class="metric-label">Countries</div></div>
+          <div class="metric"><div class="metric-num">1.4M</div><div class="metric-label">Books sent</div></div>
+          <div class="metric"><div class="metric-num">96%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★★</div>
+          <button class="sponsor-btn" onclick="switchSponsor(this,'Books Without Borders')">Sponsor · $15/mo</button>
+          <button class="learn-btn">More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-card">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#1a3a5c,#2e6099)">🎒</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:#EBF0FB">🎒</div>
+          <div><div class="np-name">SchoolKit Project</div><span class="np-cat">Children · Education</span></div>
+        </div>
+        <p class="np-desc">Provides fully-stocked school backpacks to kids in poverty at the start of every school year. No child should start school empty-handed.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">22K</div><div class="metric-label">Kits given</div></div>
+          <div class="metric"><div class="metric-num">18</div><div class="metric-label">US states</div></div>
+          <div class="metric"><div class="metric-num">94%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★☆</div>
+          <button class="sponsor-btn" onclick="switchSponsor(this,'SchoolKit Project')">Sponsor · $20/mo</button>
+          <button class="learn-btn">More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-card">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#2a4a2a,#3d7a3d)">🌍</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:var(--sage-light)">🌍</div>
+          <div><div class="np-name">Zero Waste Classrooms</div><span class="np-cat">Environment · Education</span></div>
+        </div>
+        <p class="np-desc">Teaches sustainable practices in primary schools and diverts classroom waste through creative reuse programmes. Building the next generation of eco-thinkers.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">640</div><div class="metric-label">Schools</div></div>
+          <div class="metric"><div class="metric-num">12T</div><div class="metric-label">Waste saved</div></div>
+          <div class="metric"><div class="metric-num">97%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★★</div>
+          <button class="sponsor-btn" onclick="switchSponsor(this,'Zero Waste Classrooms')">Sponsor · $15/mo</button>
+          <button class="learn-btn">More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-card">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#4a2a2a,#8a4040)">❤️</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:#FBEBEB">❤️</div>
+          <div><div class="np-name">Gift a Childhood</div><span class="np-cat">Children · Community</span></div>
+        </div>
+        <p class="np-desc">Converts unwanted gift cards and retail returns into essential items for children in foster care. Dignity through giving.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">4.8K</div><div class="metric-label">Children</div></div>
+          <div class="metric"><div class="metric-num">$2.1M</div><div class="metric-label">Redirected</div></div>
+          <div class="metric"><div class="metric-num">93%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★★</div>
+          <button class="sponsor-btn" onclick="switchSponsor(this,'Gift a Childhood')">Sponsor · $10/mo</button>
+          <button class="learn-btn">More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-card">
+      <div class="np-img-fallback" style="background:linear-gradient(135deg,#3a3020,#6a5830)">🌾</div>
+      <div class="np-body">
+        <div class="np-head">
+          <div class="np-icon" style="background:var(--amber-pale)">🌾</div>
+          <div><div class="np-name">Rural Learning Trust</div><span class="np-cat">Education · Community</span></div>
+        </div>
+        <p class="np-desc">Funds internet access, devices and tutors for students in rural areas with no access to quality education. Closing the opportunity gap.</p>
+        <div class="np-metrics">
+          <div class="metric"><div class="metric-num">3.2K</div><div class="metric-label">Students</div></div>
+          <div class="metric"><div class="metric-num">48</div><div class="metric-label">Counties</div></div>
+          <div class="metric"><div class="metric-num">91%</div><div class="metric-label">Efficiency</div></div>
+        </div>
+        <div class="np-footer">
+          <div class="rating">★★★★☆</div>
+          <button class="sponsor-btn" onclick="switchSponsor(this,'Rural Learning Trust')">Sponsor · $20/mo</button>
+          <button class="learn-btn">More</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Switch toast -->
+<div id="toast" style="position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#F7F2E8;padding:1rem 1.5rem;border-radius:12px;font-size:0.88rem;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(100px);opacity:0;transition:transform 0.4s,opacity 0.4s;max-width:300px;z-index:999;"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const user=JSON.parse(sessionStorage.getItem('gw_user')||'{}');
+  if(user.avatar)document.getElementById('sidebarAvatar').textContent=user.avatar;
+  if(user.name)document.getElementById('sidebarName').textContent=user.name;
+  if(user.email)document.getElementById('sidebarEmail').textContent=user.email;
+  function logout(){sessionStorage.removeItem('gw_user');window.location.href='login.html';}
+  document.querySelectorAll('.filter-chip').forEach(c=>c.addEventListener('click',function(){
+    document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));this.classList.add('active');
+  }));
+  function switchSponsor(btn,name){
+    const t=document.getElementById('toast');
+    t.textContent='🌱 Switched to '+name+
