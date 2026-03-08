@@ -108,6 +108,48 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
     .fu{opacity:0;animation:fadeUp 0.6s forwards;}
     .fu1{animation-delay:0.05s}.fu2{animation-delay:0.12s}.fu3{animation-delay:0.2s}
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    }
+    .mobile-nav-inner { display: flex; justify-content: space-around; align-items: center; }
+    .mob-item {
+      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+      padding: 0.4rem 0.6rem; border-radius: 10px;
+      text-decoration: none; color: rgba(247,242,232,0.45);
+      font-size: 0.6rem; font-weight: 500; transition: color 0.15s;
+      min-width: 52px; text-align: center;
+    }
+    .mob-item.active { color: #E8845F; }
+    .mob-item:hover { color: rgba(247,242,232,0.8); }
+    .mob-icon { font-size: 1.3rem; line-height: 1; }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0 !important; padding: 1.2rem 1rem 5.5rem !important; }
+      .mobile-nav { display: block; }
+      .summary, .summary-strip { grid-template-columns: 1fr 1fr !important; }
+      .dash-grid, .report-grid, .page-grid, .np-grid { grid-template-columns: 1fr !important; }
+      .topbar { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .topbar-right { width: 100%; justify-content: space-between; }
+      .settings-layout { grid-template-columns: 1fr !important; }
+      .settings-nav { position: static !important; display: flex; flex-direction: row; overflow-x: auto; border-radius: 12px; }
+      .settings-nav-item { white-space: nowrap; border-left: none !important; border-bottom: 3px solid transparent; }
+      .settings-nav-item.active { border-bottom-color: var(--terra) !important; }
+      .ih-inner { grid-template-columns: 1fr !important; }
+      .ih-stats { justify-content: flex-start; }
+      .name-row, .form-row { grid-template-columns: 1fr !important; }
+      .cb-stats { display: none; }
+      .current-banner { grid-template-columns: 1fr !important; }
+      .tgrid { grid-template-columns: 1fr !important; }
+      .tcard:nth-child(2) { margin-top: 0 !important; }
+      .bar-chart { height: 80px; }
+      .amount-chips { grid-template-columns: 1fr 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -123,7 +165,7 @@
   </nav>
   <div class="sidebar-user">
     <div class="user-avatar" id="sidebarAvatar">AJ</div>
-    <div><div class="user-name" id="sidebarName">Alex Johnson</div><div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f6e636a774f68626e6663216c6062">[email&#160;protected]</a></div></div>
+    <div><div class="user-name" id="sidebarName">Alex Johnson</div><div class="user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="83e2efe6fbc3e4eee2eaefade0ecee">[email&#160;protected]</a></div></div>
     <button class="logout-btn" onclick="logout()">↩</button>
   </div>
 </aside>
