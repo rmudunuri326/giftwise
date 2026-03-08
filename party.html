@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex's Birthday — Give a Gift That Matters</title>
+  <title>Give a Gift That Matters — Giftwise</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -422,14 +422,14 @@
 
 <!-- HERO -->
 <div class="hero-banner">
-  <div class="confetti-row">🎈 🎂 🎉 🎊 🎁 🎈 🎂 🎉 🎊 🎁 🎈 🎂 🎉</div>
-  <div class="hero-eyebrow">🎂 Birthday Celebration</div>
-  <h1>Celebrate <em>Alex</em><br>without the waste</h1>
-  <p class="hero-sub">Instead of gifts that gather dust, Alex has chosen something more meaningful. Your contribution goes directly to a child's education and a cause close to their heart.</p>
+  <div class="confetti-row">🌿 💛 🎉 🌱 🎁 🌿 💛 🎉 🌱 🎁 🌿 💛 🎉</div>
+  <div class="hero-eyebrow">💛 Purposeful Giving</div>
+  <h1>Contribute to <em id="heroName">their</em><br>purpose, not their clutter</h1>
+  <p class="hero-sub">Instead of gifts that gather dust, they've chosen something more meaningful. Your contribution goes directly to a cause close to their heart.</p>
   <div class="host-card">
     <div class="host-avatar">AJ</div>
     <div class="host-info">
-      <div class="host-name">Alex Johnson's Birthday</div>
+      <div class="host-name" id="hostName">Alex Johnson</div>
       <div class="host-label">Shared by the host · Giftwise</div>
     </div>
   </div>
@@ -451,7 +451,7 @@
     <div class="msg-icon">💌</div>
     <div class="msg-body">
       <h3>Your presence is the gift</h3>
-      <p>Alex has asked guests not to bring physical gifts. Instead, any contribution you make will be split between <strong>Maya's STEM education fund</strong> and <strong>Gifts for Good Foundation</strong> — two causes Alex cares about deeply. Even a small amount makes a real difference.</p>
+      <p>Physical gifts have been kindly declined. Instead, any contribution you make will be split between <strong>Maya's STEM education fund</strong> and <strong>Gifts for Good Foundation</strong> — two causes they care about deeply. Even a small amount makes a real difference.</p>
     </div>
   </div>
 
@@ -584,8 +584,8 @@
         </div>
 
         <div class="message-field">
-          <label>Leave a birthday message for Alex (optional)</label>
-          <textarea id="msgField" placeholder="Happy Birthday Alex! Wishing you a wonderful year ahead…"></textarea>
+          <label>Leave a message (optional)</label>
+          <textarea id="msgField" placeholder="So inspired by this — wishing you all the best…"></textarea>
         </div>
 
         <div class="anon-row">
@@ -611,7 +611,7 @@
   <div class="success-screen" id="successScreen">
     <div class="success-icon">🎉</div>
     <h2>Thank you, <em id="successName">friend</em>!</h2>
-    <p>Your contribution has been sent. Alex will be touched to know you gave something that truly matters — not just for them, but for others too.</p>
+    <p>Your contribution has been sent. They'll be touched to know you gave something that truly matters — not just for them, but for others too.</p>
     <div class="success-breakdown">
       <div class="sb-item">
         <div class="sb-label">📚 Education Fund</div>
@@ -638,6 +638,16 @@
 </div>
 
 <script>
+  // Pull host name from session if available (when viewed from dashboard)
+  const hostUser = JSON.parse(sessionStorage.getItem('gw_user') || '{}');
+  const hostFirst = hostUser.name ? hostUser.name.split(' ')[0] : null;
+  if (hostFirst) {
+    const heroName = document.getElementById('heroName');
+    const hostNameEl = document.getElementById('hostName');
+    if (heroName) heroName.textContent = hostFirst + "'s";
+    if (hostNameEl) hostNameEl.textContent = hostUser.name;
+  }
+
   // State
   let selectedAmount = 25;
   let splitPct = 50; // % going to education (needs)
@@ -737,7 +747,7 @@
   // Share
   function sharePageLink() {
     if (navigator.share) {
-      navigator.share({ title: "Alex's Birthday — Give a gift that matters", url: window.location.href });
+      navigator.share({ title: "Give a gift that matters — Giftwise", url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied! Share it with other guests 🎉'));
     }
