@@ -18,7 +18,7 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.1rem 2.5rem;
+      padding: 0.7rem 2.5rem;
       background: rgba(253,250,243,0.92); backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(139,111,71,0.1);
     }
@@ -28,12 +28,12 @@
     .nav-cta:hover { background: var(--terra-light); }
 
     .hero {
-      min-height: 78vh; display: grid; grid-template-columns: 1fr 1fr;
-      align-items: center; padding: 5.5rem 2.5rem 2.5rem; gap: 3rem;
+      min-height: 60vh; display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; padding: 4rem 2.5rem 1.5rem; gap: 2rem;
       position: relative; overflow: hidden;
     }
     .hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 60vw; height: 60vw; border-radius: 50%; background: radial-gradient(circle, rgba(196,98,58,0.07) 0%, transparent 65%); pointer-events: none; }
-    .eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-dark); margin-bottom: 1.4rem; }
+    .eyebrow { display: inline-block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-dark); margin-bottom: 0.7rem; }
     .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 4vw, 3.8rem); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em; color: var(--charcoal); margin-bottom: 1rem; }
     .hero h1 em { font-style: italic; color: var(--terra); }
     .hero-sub { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 440px; margin-bottom: 1.4rem; }
@@ -43,14 +43,14 @@
     .btn-ghost { border: 1.5px solid var(--earth); color: var(--earth); padding: 0.85rem 2rem; border-radius: 100px; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: background 0.2s, transform 0.2s; display: inline-block; }
     .btn-ghost:hover { background: rgba(139,111,71,0.07); transform: translateY(-2px); }
 
-    .hero-right { position: relative; height: 520px; opacity: 0; animation: fadeIn 1s 0.6s forwards; }
+    .hero-right { position: relative; height: 380px; opacity: 0; animation: fadeIn 1s 0.6s forwards; }
     .polaroid { position: absolute; background: white; padding: 10px 10px 38px; box-shadow: 0 8px 32px rgba(0,0,0,0.13); border-radius: 3px; transition: transform 0.4s; }
     .polaroid img { width: 100%; height: 190px; object-fit: cover; display: block; filter: saturate(0.75); }
     .polaroid .caption { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 8px; }
-    .polaroid:nth-child(1) { width: 210px; top: 20px; left: 10px; transform: rotate(-5deg); }
-    .polaroid:nth-child(2) { width: 230px; top: 55px; left: 155px; transform: rotate(3.5deg); z-index: 2; }
-    .polaroid:nth-child(3) { width: 205px; top: 240px; left: 40px; transform: rotate(-2deg); z-index: 3; }
-    .polaroid:nth-child(4) { width: 215px; top: 255px; left: 220px; transform: rotate(5deg); z-index: 1; }
+    .polaroid:nth-child(1) { width: 180px; top: 10px; left: 10px; transform: rotate(-5deg); }
+    .polaroid:nth-child(2) { width: 195px; top: 35px; left: 135px; transform: rotate(3.5deg); z-index: 2; }
+    .polaroid:nth-child(3) { width: 175px; top: 185px; left: 30px; transform: rotate(-2deg); z-index: 3; }
+    .polaroid:nth-child(4) { width: 185px; top: 195px; left: 190px; transform: rotate(5deg); z-index: 1; }
     .polaroid:hover { transform: rotate(0deg) scale(1.05) !important; z-index: 10; }
 
     .strip-section { background: var(--dark); padding-bottom: 2rem; }
@@ -147,7 +147,6 @@
 <body>
 <nav>
   <div class="logo">Gift<span>wise</span></div>
-  <a href="party.html" class="nav-cta" style="background:var(--sage-dark);margin-right:0.5rem">💛 Donate to My Purpose</a>
   <a href="login.html" class="nav-cta">Sign In</a>
 </nav>
 
@@ -158,7 +157,6 @@
     <p class="hero-sub fi fi3">Every year, billions of unwanted gifts end their journey in a landfill. Giftwise helps you give with intention — presents people actually cherish.</p>
     <div class="hero-actions fi fi4">
       <a href="login.html" class="btn-primary">Count Me In →</a>
-      <a href="party.html" class="btn-ghost" style="border-color:var(--sage-dark);color:var(--sage-dark)">💛 Donate to My Purpose</a>
       <a href="#story" class="btn-ghost">See the Problem ↓</a>
     </div>
   </div>
@@ -264,7 +262,6 @@
     <h2>Be part of the<br><em>purposeful gifting</em><br>revolution</h2>
     <p class="sub">Create your free account and start giving gifts that truly matter — to the people you love and the planet we share.</p>
     <a href="login.html" class="btn-primary" style="font-size:1rem; padding:1rem 2.5rem;">Count Me In →</a>
-    <a href="party.html" class="btn-primary" style="font-size:1rem; padding:1rem 2.5rem; background:var(--sage-dark); margin-top:0.8rem; display:inline-block;">💛 Donate to My Purpose</a>
   </div>
 </section>
 
